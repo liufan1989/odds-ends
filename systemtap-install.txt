@@ -1,0 +1,42 @@
+
+安装systemtap
+
+centos|redhat|fedora：
+1 uname -ra 查看linux版本和机器架构
+	root@[bogon:~]: uname -rm
+	3.10.0-327.28.3.el7.x86_64 x86_64
+2 下载相对应的内核调试信息包并安装：http://debuginfo.centos.org/7/x86_64/
+	kernel-debug-3.10.0-327.28.3.el7.x86_64.rpm
+	kernel-debuginfo-3.10.0-327.28.3.el7.x86_64.rpm
+	kernel-debuginfo-common-x86_64-3.10.0-327.28.3.el7.x86_64.rpm
+3 安装systemtap 
+	yum install systemtap
+4 测试systemtap是否安装成功
+	stap -e 'probe kernel.function("sys_open") {log("hello world") exit()}'
+
+debain|ubuntu
+1 uname -ra 查看linux版本和机器架构
+	root@UServer2:~#  uname -rm
+	4.4.0-45-generic x86_64
+2 下载相对应的内核调试信息包并安装:http://ddebs.ubuntu.com/pool/main/l/linux/
+	linux-image-4.4.0-45-generic-dbgsym_4.4.0-45.66_amd64.ddeb
+3 安装linux对应头文件 apt-get install linux-headers-`uname -r`
+4 安装systemtap 
+	apt-get install systemtap
+5 测试systemtap是否安装成功
+	stap -e 'probe kernel.function("sys_open") {log("hello world") exit()}'
+
+安装待监控的程序，程序安装时添加调试信息: ./configrate --with-debug
+查询待监控程序的pid
+	
+下载ngx tool工具生成调用栈信息：https://github.com/openresty/nginx-systemtap-toolkit
+下载Flame-Graphic生成包：https://github.com/brendangregg/FlameGraph
+
+1 ./sample-bt -p pid -t 5 -u > a.bt
+2 .stackcollapse-stap.pl a.bt > a.cbt
+3 .flamegraph.pl a.cbt > a.svg
+
+systemtap相关参考：
+http://www.ibm.com/developerworks/cn/linux/l-cn-systemtap3/index.html
+https://moonbingbing.gitbooks.io/openresty-best-practices/content/flame_graph/install.html
+http://sourceware.org/systemtap/documentation.html
